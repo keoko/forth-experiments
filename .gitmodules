@@ -1,0 +1,6 @@
+[submodule "deps/zeptoforth"]
+	path = deps/zeptoforth
+	url = https://github.com/tabemann/zeptoforth.git
+[submodule "deps/cyw43-firmware"]
+	path = deps/cyw43-firmware
+	url = https://github.com/tabemann/cyw43-firmware.git
