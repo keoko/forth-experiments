@@ -9,7 +9,8 @@ forth-experiments/
 ├── deps/
 │   ├── zeptoforth/       ← git submodule (Forth implementation for RP2040/RP2350)
 │   └── cyw43-firmware/   ← git submodule (CYW43439 WiFi chip firmware blobs)
-└── pico2w-led-blink/     ← blink the onboard LED on a Raspberry Pi Pico 2W
+├── pico2w-led-blink/     ← blink the onboard LED on a Raspberry Pi Pico 2W
+└── pico2w-hello-led/     ← blink an external LED on GP15
 ```
 
 ## Getting started
@@ -31,6 +32,7 @@ git submodule update --init --recursive
 | Directory | Board | Description |
 |-----------|-------|-------------|
 | [pico2w-led-blink](pico2w-led-blink/) | Raspberry Pi Pico 2W | Blink the onboard LED via the CYW43439 WiFi chip |
+| [pico2w-hello-led](pico2w-hello-led/) | Raspberry Pi Pico 2W | Blink an external LED on GP15 via direct GPIO |
 
 ## Hardware
 
