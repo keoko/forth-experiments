@@ -28,6 +28,24 @@ If you already cloned without submodules:
 git submodule update --init --recursive
 ```
 
+## Makefile
+
+The root `Makefile` provides three targets for working with a connected Pico over USB serial.
+
+| Target | Description |
+|--------|-------------|
+| `make tty` | Print the auto-detected `/dev/ttyACM*` path of the connected Pico |
+| `make load` | Load a Forth source file onto the Pico (defaults to `pico2w-hello-lcd/hello-lcd.fs`) |
+| `make repl` | Open the zeptoforth REPL over serial |
+
+Loading a specific file:
+
+```bash
+make load LOAD_FILE=pico2w-hello-led/hello-led.fs
+```
+
+The Pico is detected automatically by its zeptoforth USB serial ID — no need to hardcode `/dev/ttyACMx`. Both `load` and `repl` require `sudo`. Exit `screen` with `Ctrl-A \`.
+
 ## Experiments
 
 | Directory | Board | Description |
