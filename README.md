@@ -79,9 +79,51 @@ Loading a specific file:
 make load LOAD_FILE=pico2w-hello-led/hello-led.fs
 ```
 
-The Pico is detected automatically by its zeptoforth USB serial ID — no need to hardcode `/dev/ttyACMx`. None of the targets need `sudo` once you are in the `uucp` group (see above). Exit `screen` with `Ctrl-A \`.
+The Pico is detected automatically by its zeptoforth USB serial ID — no need to hardcode `/dev/ttyACMx`. None of the targets need `sudo` once you are in the `uucp` group (see above).
 
 Code loaded this way lives in RAM, so reload it after every power cycle.
+
+### Working with the REPL
+
+`make repl` opens the REPL in `screen`. Only one program can use the serial
+port at a time, so **`make load` fails while the REPL is open**:
+
+```
+Error: TTY device /dev/ttyACM0 invalid
+```
+
+The usual cycle is: load, open the REPL, try things, close the REPL, edit, load again.
+
+```bash
+make load LOAD_FILE=pico2w-button-counter/button-counter.fs
+make repl
+```
+
+**Closing the REPL properly:**
+
+1. If a program is running (e.g. `counter`), press any key to stop it and get
+   the `ok` prompt back.
+2. Optional: type `reboot` to clear RAM and reset the hardware (LEDs off) before
+   loading something else.
+3. Press `Ctrl-A`, then `\`, and answer `y` to "Really quit and kill all your windows?".
+
+Don't close the terminal window instead, and don't use `Ctrl-A d`: both leave
+`screen` running in the background, still holding the port. If `make load`
+reports the port as invalid and no REPL is visible, find and close the leftover
+session:
+
+```bash
+screen -ls                    # lists sessions, e.g. 5278.pts-1.host (Detached)
+screen -r 5278                # reattach, then quit with Ctrl-A \ as above
+screen -X -S 5278 quit        # or close it without reattaching
+```
+
+`fuser -v /dev/ttyACM*` shows which process has the port open.
+
+**Don't type multi-line code into the REPL.** The terminal wraps long lines and
+can split words in two (`my-ctrl` becomes `my-ct rl`). Put the code in a `.fs`
+file and load it with `make load`; use the REPL for calling words and quick
+one-liners such as `25 brightness!`.
 
 ## Experiments
 
