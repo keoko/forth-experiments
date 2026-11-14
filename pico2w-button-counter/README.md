@@ -78,8 +78,10 @@ close when it's pressed.
 
 ## Files
 
-- `button-counter.fs` — the counter; pulls in the driver with `#include ../lib/lcd.fs`
+- `button-counter.fs` — the counter
 - [`../lib/lcd.fs`](../lib/lcd.fs) — the shared HD44780 driver
+- [`../lib/button.fs`](../lib/button.fs) — the shared debounced button: everything
+  except `show-presses`, `on-press` and `counter` in the table below
 
 ## Run
 
@@ -114,8 +116,9 @@ REPL to stop.
 | `pressed?` | `true` while the button is down (pin reads low) |
 | `debounced-pressed?` | Samples twice, 20 ms apart, until both readings agree |
 | `held-ms` | Waits for release and returns roughly how long the button was held |
+| `long-press?` | `held-ms` compared with 1 s: `true` for a long press |
 | `on-press` | Short press: count + 1. Long press: reset to 0 |
-| `show-presses` | Clears row 1 and prints the count |
+| `show-presses` | Clears row 1 (`lcd-clear-row`) and prints the count |
 | `counter` | Main loop: poll the button until a key is pressed in the REPL |
 
 ### Debouncing

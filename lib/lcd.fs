@@ -73,3 +73,6 @@ pin import
   row col goto
   u 0 ?do c-addr i + c@ data! loop
 ;
+
+\ Blank out a whole row (0-1)
+: lcd-clear-row ( row -- ) 0 s"                 " lcd-print ;
