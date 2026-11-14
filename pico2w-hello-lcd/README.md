@@ -50,7 +50,9 @@ LCD pin  Label  →  Pico 2W
 
 > **Power (VDD):** This LCD1602A module requires 5 V on VDD for sufficient
 > contrast. Use VBUS (pin 40) rather than 3V3 OUT (pin 36). The logic signals
-> (RS, E, D4–D7) remain at 3.3 V and connect directly to the Pico GPIOs.
+> (RS, E, D4–D7) remain at 3.3 V and connect directly to the Pico GPIOs. This is
+> safe only because RW is tied to GND: the LCD never drives the data lines, so no
+> 5 V signal reaches the Pico.
 >
 > **Contrast (V0):** With VDD at 5 V, connecting V0 directly to GND gives
 > maximum contrast and is the easiest starting point. For fine-tuning, wire a
@@ -59,56 +61,27 @@ LCD pin  Label  →  Pico 2W
 > **Blank display?** The most common causes are (1) VDD at 3.3 V instead of
 > 5 V — switch to VBUS; (2) contrast — adjust V0.
 
-## Repository structure
+## Files
 
-```
-forth-experiments/
-├── deps/
-│   └── zeptoforth/          ← git submodule
-└── pico2w-hello-lcd/
-    ├── README.md            ← this file
-    └── hello-lcd.fs
-```
+- `hello-lcd.fs` — defines `hello`; pulls in the driver with `#include ../lib/lcd.fs`
+- [`../lib/lcd.fs`](../lib/lcd.fs) — the reusable HD44780 driver (pins, init, `lcd-print`)
 
 ## Dependencies
 
-### zeptoforth
+- zeptoforth 1.16.1.1 (submodule at `../deps/zeptoforth/`), flashed as described in
+  the [root README](../README.md#flash-zeptoforth)
+- No extra zeptoforth driver needed — the LCD driver is in this repo
 
-- Repository: https://github.com/tabemann/zeptoforth
-- Tested version: 1.16.1.1
-- Available as a git submodule at `../deps/zeptoforth/`
-- No extra driver needed — `hello-lcd.fs` is self-contained
+## Run
 
-### System dependencies (Arch Linux)
-
-```bash
-sudo pacman -S python-pyserial screen
-```
-
-## Setup
-
-### 1. Flash zeptoforth firmware
-
-Hold BOOTSEL while plugging in the Pico 2W. Copy the UF2:
+From the repository root:
 
 ```bash
-cp ../deps/zeptoforth/bin/1.16.1.1/rp2350/zeptoforth_full_usb-1.16.1.1.uf2 \
-   /run/media/$USER/RP2350/
+make load    # loads pico2w-hello-lcd/hello-lcd.fs (the default)
+make repl
 ```
 
-### 2. Load the program
-
-```bash
-cd ../deps/zeptoforth
-sudo utils/codeload3.sh -B 115200 -p /dev/ttyACM0 serial \
-  ../../pico2w-hello-lcd/hello-lcd.fs
-```
-
-### 3. Open the REPL and run
-
-```bash
-screen /dev/ttyACM0 115200
-```
+At the REPL:
 
 ```forth
 hello
@@ -121,31 +94,21 @@ hello world,
 zeptoforth!
 ```
 
-## Validating the circuit with MicroPython
+### Troubleshooting
 
-Before running the zeptoforth code, wiring can be verified with a MicroPython
-script. Flash the MicroPython UF2 for RP2350, then run a script using the same
-GP16–GP21 pin mapping:
-
-```python
-import machine, utime
-
-rs = machine.Pin(16, machine.Pin.OUT)
-e  = machine.Pin(17, machine.Pin.OUT)
-d4 = machine.Pin(18, machine.Pin.OUT)
-d5 = machine.Pin(19, machine.Pin.OUT)
-d6 = machine.Pin(20, machine.Pin.OUT)
-d7 = machine.Pin(21, machine.Pin.OUT)
-```
-
-If text appears under MicroPython, the circuit is correct and the zeptoforth
-code will work after reflashing zeptoforth firmware.
+| What you see | Likely cause |
+|---|---|
+| A row of solid blocks on line 1 | Power and contrast are fine, but the LCD hasn't been initialised — run `hello`. If the blocks remain, check E (GP17), RS (GP16), RW tied to GND, and a shared ground |
+| Random characters | D4–D7 swapped or loose — check them against GP18–GP21 in order |
+| Blank screen, no blocks | Contrast — tie V0 to GND or adjust the potentiometer |
 
 ## How it works
 
 The HD44780 controller inside the LCD1602A accepts 8-bit commands and data.
 In **4-bit mode** only pins D4–D7 are used; each byte is sent as two nibbles
 (high nibble first), each latched by a pulse on Enable.
+
+All of these words live in `../lib/lcd.fs`.
 
 | Step | Word | What it does |
 |------|------|--------------|
@@ -157,6 +120,7 @@ In **4-bit mode** only pins D4–D7 are used; each byte is sent as two nibbles
 | Data | `data!` | Calls `send-byte` with RS = 1 |
 | Cursor | `goto` | Sends DDRAM address command (`$80\|addr`) |
 | Print | `lcd-print` | Sets cursor then sends each character |
+| Clear | `lcd-clear` | Clears the display and homes the cursor |
 
 Initialisation follows the HD44780 datasheet's "4-bit mode" sequence: three
 8-bit reset pulses using only the upper nibble, then the switch to 4-bit, then

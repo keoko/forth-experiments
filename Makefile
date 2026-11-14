@@ -1,7 +1,9 @@
 # Default Forth file to load onto the Pico. Override with: make load LOAD_FILE=<path>
 LOAD_FILE ?= pico2w-hello-lcd/hello-lcd.fs
 
-.PHONY: tty load repl
+CYW43_DRIVER = deps/zeptoforth/extra/rp_common/cyw43/cyw43_all.fs
+
+.PHONY: tty load cyw43 repl
 
 # Print the /dev/ttyACM* path of the connected Pico (detected by zeptoforth USB ID).
 tty:
@@ -13,12 +15,18 @@ tty:
 		exit 1; \
 	fi
 
-# Load a Forth source file onto the Pico via serial (requires sudo).
+# Load a Forth source file onto the Pico via serial.
 #   make load                                         # loads $(LOAD_FILE)
 #   make load LOAD_FILE=pico2w-hello-led/hello-led.fs
 load:
-	sudo deps/zeptoforth/utils/codeload3.sh -B 115200 -p $$($(MAKE) -s --no-print-directory tty) serial $(LOAD_FILE)
+	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
+	deps/zeptoforth/utils/codeload3.sh -B 115200 -p "$$port" serial $(LOAD_FILE)
 
-# Open the zeptoforth REPL over serial (requires sudo). Exit with Ctrl-A \.
+# Load the CYW43 driver (needed by pico2w-led-blink; RAM only, repeat after each power cycle).
+cyw43:
+	@$(MAKE) -s --no-print-directory load LOAD_FILE=$(CYW43_DRIVER)
+
+# Open the zeptoforth REPL over serial. Exit with Ctrl-A \.
 repl:
-	sudo screen $$($(MAKE) -s --no-print-directory tty) 115200
+	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
+	screen "$$port" 115200

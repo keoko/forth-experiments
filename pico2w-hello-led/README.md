@@ -13,65 +13,28 @@ GP15 (pin 20) ──[220Ω]──[LED anode]──[LED cathode]── GND
 - Connect the other leg to the LED anode (longer leg).
 - Connect the LED cathode (shorter leg) to GND.
 
-## Repository structure
-
-```
-forth-experiments/
-├── deps/
-│   └── zeptoforth/          ← git submodule
-└── pico2w-hello-led/
-    ├── README.md            ← this file
-    └── hello-led.fs
-```
-
 ## Dependencies
 
-### zeptoforth
+- zeptoforth 1.16.1.1 (submodule at `../deps/zeptoforth/`), flashed as described in
+  the [root README](../README.md#flash-zeptoforth)
+- No CYW43 driver needed — GP15 is a plain GPIO pin
 
-- Repository: https://github.com/tabemann/zeptoforth
-- Tested version: 1.16.1.1
-- Available as a git submodule at `../deps/zeptoforth/`
+## Run
 
-### System dependencies (Arch Linux)
-
-```bash
-sudo pacman -S python-pyserial screen
-```
-
-## Setup
-
-### 1. Flash zeptoforth firmware
-
-Hold BOOTSEL while plugging in the Pico 2W. Copy the UF2:
+From the repository root:
 
 ```bash
-cp ../deps/zeptoforth/bin/1.16.1.1/rp2350/zeptoforth_full_usb-1.16.1.1.uf2 \
-   /run/media/$USER/RP2350/
+make load LOAD_FILE=pico2w-hello-led/hello-led.fs
+make repl
 ```
 
-### 2. Load and run
-
-No CYW43 driver needed — GP15 is a plain GPIO pin.
-
-```bash
-cd ../deps/zeptoforth
-sudo utils/codeload3.sh -B 115200 -p /dev/ttyACM0 serial \
-  ../../pico2w-hello-led/hello-led.fs
-```
-
-Open the REPL:
-
-```bash
-screen /dev/ttyACM0 115200
-```
-
-Run:
+At the REPL:
 
 ```forth
 blink
 ```
 
-Press any key to stop.
+Press any key to stop (the key is checked once per on/off cycle, so it can take up to 4 s).
 
 ## How it works
 
@@ -85,5 +48,9 @@ Press any key to stop.
 `pin!` takes `( state pin -- )`. `high` and `low` are constants (`true`/`false`)
 exported by the `pin` module.
 
-The `begin key? while key drop repeat` before the loop drains any buffered
+`drain-pressed-keys` (`begin key? while key drop repeat`) runs before the loop and drains any buffered
 keypress (the Enter used to invoke `blink`) so the loop does not exit immediately.
+
+The setup word is called `init-led` rather than `init`: in zeptoforth, `init` is
+the boot hook that the system runs at startup, and redefining it would break boot
+if the file were ever compiled to flash.
