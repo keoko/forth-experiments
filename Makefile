@@ -6,7 +6,10 @@ ZEPTOFORTH = deps/zeptoforth
 CYW43_DRIVER = extra/rp_common/cyw43/cyw43_all.fs
 CYW43_FW_DIR = deps/cyw43-firmware/cyw43439-firmware
 
-.PHONY: tty load cyw43-fw cyw43 repl
+# App that `make flash` compiles into flash to run at every boot
+FLASH_FILE = pico2w-standalone/standalone.fs
+
+.PHONY: tty load cyw43-fw cyw43 repl send reboot flash unflash wait-for-pico
 
 # Print the /dev/ttyACM* path of the connected Pico (detected by zeptoforth USB ID).
 tty:
@@ -41,3 +44,31 @@ cyw43:
 repl:
 	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
 	screen "$$port" 115200
+
+# Send one line to the REPL without opening screen: make send CMD='presses @ .'
+send:
+	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
+	python3 -c 'import serial, sys; s = serial.Serial(sys.argv[1], 115200); s.write(sys.argv[2].encode() + b"\r"); s.flush()' "$$port" "$(CMD)"
+
+# Reboot the Pico and wait until its serial port is back.
+reboot:
+	@$(MAKE) -s --no-print-directory send CMD=reboot
+	@$(MAKE) -s --no-print-directory wait-for-pico
+
+# Compile $(FLASH_FILE) into flash, then reboot so it starts. Undo with make unflash.
+flash: reboot
+	@$(MAKE) -s --no-print-directory load LOAD_FILE=$(FLASH_FILE)
+	@$(MAKE) -s --no-print-directory reboot
+
+# Erase the app installed by make flash (runs its forget-app marker, which reboots).
+unflash:
+	@$(MAKE) -s --no-print-directory send CMD=forget-app
+	@$(MAKE) -s --no-print-directory wait-for-pico
+
+wait-for-pico:
+	@sleep 2; \
+	for i in $$(seq 1 20); do \
+		$(MAKE) -s --no-print-directory tty >/dev/null 2>&1 && exit 0; \
+		sleep 1; \
+	done; \
+	echo "Pico did not come back after rebooting" >&2; exit 1

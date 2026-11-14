@@ -18,7 +18,8 @@ forth-experiments/
 ├── pico2w-button-counter/ ← count debounced button presses on the LCD
 ├── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
 ├── pico2w-dimmer-task/   ← the dimmer as a background task; REPL stays free
-└── pico2w-button-irq/    ← count presses with a GPIO interrupt, no polling
+├── pico2w-button-irq/    ← count presses with a GPIO interrupt, no polling
+└── pico2w-standalone/    ← the IRQ counter in flash, started at every boot
 ```
 
 Experiments pull in shared code from `lib/` with `#include ../lib/<file>.fs`.
@@ -81,6 +82,10 @@ The root `Makefile` provides these targets for working with a connected Pico ove
 | `make cyw43-fw` | Upload the CYW43439 firmware blobs to flash (one-time; redo after reflashing zeptoforth) |
 | `make cyw43` | Load the CYW43 WiFi-chip driver (needed by `pico2w-led-blink`) |
 | `make repl` | Open the zeptoforth REPL over serial |
+| `make send CMD='...'` | Send one line to the REPL without opening `screen` |
+| `make reboot` | Reboot the Pico and wait for it to come back |
+| `make flash` | Compile `pico2w-standalone` into flash so it runs at every boot |
+| `make unflash` | Remove the app installed by `make flash` |
 
 Loading a specific file:
 
@@ -149,6 +154,7 @@ one-liners such as `25 brightness!`.
 | [pico2w-led-dimmer](pico2w-led-dimmer/) | Raspberry Pi Pico 2W | Set the GP15 LED's brightness with PWM, stepped by the button, shown on the LCD |
 | [pico2w-dimmer-task](pico2w-dimmer-task/) | Raspberry Pi Pico 2W | Run the dimmer as a zeptoforth task, controllable from the REPL while it runs |
 | [pico2w-button-irq](pico2w-button-irq/) | Raspberry Pi Pico 2W | Count button presses with a GPIO interrupt; LCD shows presses vs. raw bounce edges |
+| [pico2w-standalone](pico2w-standalone/) | Raspberry Pi Pico 2W | Compile the IRQ counter into flash and start it at boot, no PC needed |
 
 ## Hardware
 
