@@ -68,7 +68,7 @@ LCD pin  Label  →  Pico 2W
 
 ## Dependencies
 
-- zeptoforth 1.16.1.1 (submodule at `../deps/zeptoforth/`), flashed as described in
+- zeptoforth 1.17.2 (submodule at `../deps/zeptoforth/`), flashed as described in
   the [root README](../README.md#flash-zeptoforth)
 - No extra zeptoforth driver needed — the LCD driver is in this repo
 

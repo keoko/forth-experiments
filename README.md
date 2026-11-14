@@ -54,13 +54,19 @@ sudo usermod -aG uucp $USER
 
 The firmware images are not in the git repository; they ship with each
 [zeptoforth release](https://github.com/tabemann/zeptoforth/releases). Download
-the 1.16.1.1 release archive, extract it, then hold BOOTSEL while plugging in the
+the 1.17.2 release archive, extract it, then hold BOOTSEL while plugging in the
 Pico 2W and copy the UF2 from the extracted archive:
 
 ```bash
-cp zeptoforth-1.16.1.1/bin/1.16.1.1/rp2350/zeptoforth_full_usb-1.16.1.1.uf2 \
+udisksctl mount -b /dev/disk/by-label/RP2350   # skip if your desktop already mounted it
+cp zeptoforth-1.17.2/bin/1.17.2/rp2350/zeptoforth_full_usb-1.17.2.uf2 \
    /run/media/$USER/RP2350/
 ```
+
+If `cp` says `/run/media/$USER/RP2350/: No such file or directory`, the drive
+isn't mounted — run the `udisksctl` line. `lsblk -o NAME,LABEL` shows it as
+`RP2350` while the Pico is in BOOTSEL mode. The Pico reboots into zeptoforth by
+itself once the copy finishes.
 
 ## Makefile
 

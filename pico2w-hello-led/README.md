@@ -15,7 +15,7 @@ GP15 (pin 20) ──[220Ω]──[LED anode]──[LED cathode]── GND
 
 ## Dependencies
 
-- zeptoforth 1.16.1.1 (submodule at `../deps/zeptoforth/`), flashed as described in
+- zeptoforth 1.17.2 (submodule at `../deps/zeptoforth/`), flashed as described in
   the [root README](../README.md#flash-zeptoforth)
 - No CYW43 driver needed — GP15 is a plain GPIO pin
 

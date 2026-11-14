@@ -10,7 +10,7 @@ the LED can be controlled.
 
 The Forth implementation for RP2040/RP2350 boards.
 
-- Tested version: 1.16.1.1, available as a git submodule at `../deps/zeptoforth/`
+- Tested version: 1.17.2, available as a git submodule at `../deps/zeptoforth/`
 - Flash it as described in the [root README](../README.md#flash-zeptoforth)
 
 ### CYW43439 firmware
