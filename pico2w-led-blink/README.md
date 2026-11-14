@@ -26,14 +26,15 @@ Not included in zeptoforth — provided as a git submodule at `../deps/cyw43-fir
 The blobs are stored in flash, so this survives reboots. From the repository root:
 
 ```bash
-deps/zeptoforth/utils/load_cyw43_fw.sh \
-  $(make -s tty) \
-  deps/cyw43-firmware/cyw43439-firmware/43439A0.bin \
-  deps/cyw43-firmware/cyw43439-firmware/43439A0_clm.bin
+make cyw43-fw
 ```
 
 This uploads the firmware as `cyw43-fw` and `cyw43-clm` modules to flash.
 If you see "module already defined", the firmware is already there — skip this step.
+
+**Redo this after flashing a new zeptoforth UF2**: flashing wipes the blobs. The
+symptom is `make load LOAD_FILE=pico2w-led-blink/blink.fs` failing with
+`unable to parse: cyw43-clm::data`.
 
 ## Every boot
 
@@ -56,6 +57,10 @@ blink
 ```
 
 Press any key to stop blinking.
+
+`make cyw43-fw` and `make cyw43` run the zeptoforth scripts from inside
+`deps/zeptoforth`, because the driver's `#include` lines and the upload script
+both use paths relative to that directory.
 
 ## Notes
 

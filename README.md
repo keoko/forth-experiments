@@ -76,6 +76,7 @@ The root `Makefile` provides these targets for working with a connected Pico ove
 |--------|-------------|
 | `make tty` | Print the auto-detected `/dev/ttyACM*` path of the connected Pico |
 | `make load` | Load a Forth source file onto the Pico (defaults to `pico2w-hello-lcd/hello-lcd.fs`) |
+| `make cyw43-fw` | Upload the CYW43439 firmware blobs to flash (one-time; redo after reflashing zeptoforth) |
 | `make cyw43` | Load the CYW43 WiFi-chip driver (needed by `pico2w-led-blink`) |
 | `make repl` | Open the zeptoforth REPL over serial |
 
