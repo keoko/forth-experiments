@@ -19,7 +19,8 @@ forth-experiments/
 ├── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
 ├── pico2w-dimmer-task/   ← the dimmer as a background task; REPL stays free
 ├── pico2w-button-irq/    ← count presses with a GPIO interrupt, no polling
-└── pico2w-standalone/    ← the IRQ counter in flash, started at every boot
+├── pico2w-standalone/    ← the IRQ counter in flash, started at every boot
+└── pico2w-thermometer/   ← internal temperature sensor via the ADC, on the LCD
 ```
 
 Experiments pull in shared code from `lib/` with `#include ../lib/<file>.fs`.
@@ -155,6 +156,7 @@ one-liners such as `25 brightness!`.
 | [pico2w-dimmer-task](pico2w-dimmer-task/) | Raspberry Pi Pico 2W | Run the dimmer as a zeptoforth task, controllable from the REPL while it runs |
 | [pico2w-button-irq](pico2w-button-irq/) | Raspberry Pi Pico 2W | Count button presses with a GPIO interrupt; LCD shows presses vs. raw bounce edges |
 | [pico2w-standalone](pico2w-standalone/) | Raspberry Pi Pico 2W | Compile the IRQ counter into flash and start it at boot, no PC needed |
+| [pico2w-thermometer](pico2w-thermometer/) | Raspberry Pi Pico 2W | Read the RP2350's internal temperature sensor with the ADC and fixed-point maths |
 
 ## Hardware
 
