@@ -38,12 +38,16 @@ variable brightness      \ 0-100 %
 ;
 
 \ Short press: +10 %, wrapping 100 -> 0.  Long press: off
-: on-press ( -- )
-  long-press? if
+: next-brightness ( long? -- percent )
+  if
     0
   else
     brightness @ step-percent +  dup 100 > if drop 0 then
   then
+;
+
+: on-press ( -- )
+  long-press? next-brightness
   brightness!
   show-brightness
 ;

@@ -16,7 +16,8 @@ forth-experiments/
 ├── pico2w-hello-led/     ← blink an external LED on GP15
 ├── pico2w-hello-lcd/     ← display text on a 16×2 LCD1602A (4-bit parallel)
 ├── pico2w-button-counter/ ← count debounced button presses on the LCD
-└── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
+├── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
+└── pico2w-dimmer-task/   ← the dimmer as a background task; REPL stays free
 ```
 
 Experiments pull in shared code from `lib/` with `#include ../lib/<file>.fs`.
@@ -141,6 +142,7 @@ one-liners such as `25 brightness!`.
 | [pico2w-hello-lcd](pico2w-hello-lcd/) | Raspberry Pi Pico 2W | Display "hello world, / zeptoforth!" on a 16×2 LCD1602A (4-bit parallel) |
 | [pico2w-button-counter](pico2w-button-counter/) | Raspberry Pi Pico 2W | Count debounced button presses on GP14 and show them on the LCD |
 | [pico2w-led-dimmer](pico2w-led-dimmer/) | Raspberry Pi Pico 2W | Set the GP15 LED's brightness with PWM, stepped by the button, shown on the LCD |
+| [pico2w-dimmer-task](pico2w-dimmer-task/) | Raspberry Pi Pico 2W | Run the dimmer as a zeptoforth task, controllable from the REPL while it runs |
 
 ## Hardware
 
