@@ -45,10 +45,19 @@ repl:
 	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
 	screen "$$port" 115200
 
-# Send one line to the REPL without opening screen: make send CMD='presses @ .'
+# Send one line to the REPL without opening screen and print the reply:
+#   make send CMD='presses @ .'
+# The USB console drops input that arrives right as the port opens or closes,
+# so keep it open (fd 3), wait 0.5 s (discarding old output such as the boot
+# banner), send, and read the reply for 1.5 s.
 send:
 	@port=$$($(MAKE) -s --no-print-directory tty) || exit 1; \
-	python3 -c 'import serial, sys; s = serial.Serial(sys.argv[1], 115200); s.write(sys.argv[2].encode() + b"\r"); s.flush()' "$$port" "$(CMD)"
+	exec 3<>"$$port"; \
+	stty -F "$$port" 115200 raw -echo; \
+	timeout 0.5 cat <&3 >/dev/null; \
+	printf '%s\r' "$(CMD)" >&3; \
+	timeout 1.5 cat <&3 | tr -d '\006'; \
+	echo
 
 # Reboot the Pico and wait until its serial port is back.
 reboot:

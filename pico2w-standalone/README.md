@@ -103,7 +103,17 @@ too, and `make unflash` leaves them alone.
 | `make flash` | `make reboot`, then loads `standalone.fs`, then `make reboot` |
 | `make unflash` | sends `forget-app` to the REPL and waits for the reboot |
 | `make reboot` | sends `reboot` and waits until the serial port is back |
-| `make send CMD='...'` | sends one line to the REPL without opening `screen` |
+| `make send CMD='...'` | sends one line to the REPL without opening `screen` and prints the reply |
+
+To check whether the app is installed:
+
+```bash
+make send CMD="' start-app h.8"   # an address like 100F4CC6: installed; "unknown word": not
+```
+
+`make send` is plain shell (`stty`, `cat`, `timeout`): it keeps the port open,
+waits half a second before sending and reads the reply for 1.5 s, because the
+USB console drops input that arrives right as the port opens or closes.
 
 The first reboot matters: flash code must not use words that only exist in RAM,
 and rebooting clears anything left over from earlier `make load`s.

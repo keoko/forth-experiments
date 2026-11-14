@@ -82,7 +82,7 @@ The root `Makefile` provides these targets for working with a connected Pico ove
 | `make cyw43-fw` | Upload the CYW43439 firmware blobs to flash (one-time; redo after reflashing zeptoforth) |
 | `make cyw43` | Load the CYW43 WiFi-chip driver (needed by `pico2w-led-blink`) |
 | `make repl` | Open the zeptoforth REPL over serial |
-| `make send CMD='...'` | Send one line to the REPL without opening `screen` |
+| `make send CMD='...'` | Send one line to the REPL without opening `screen`, and print the reply |
 | `make reboot` | Reboot the Pico and wait for it to come back |
 | `make flash` | Compile `pico2w-standalone` into flash so it runs at every boot |
 | `make unflash` | Remove the app installed by `make flash` |
