@@ -3,17 +3,16 @@ pin import
 15 constant led-pin
 2000 constant blink-delay
 
-
-: drain-pressed-keys
+: drain-pressed-keys ( -- )
   begin key? while key drop repeat
 ;
 
-: init
+: init-led ( -- )
   led-pin output-pin
 ;
 
-: blink
-  init
+: blink ( -- )
+  init-led
   drain-pressed-keys
   begin
     high led-pin pin!
