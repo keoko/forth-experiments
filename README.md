@@ -17,7 +17,8 @@ forth-experiments/
 ├── pico2w-hello-lcd/     ← display text on a 16×2 LCD1602A (4-bit parallel)
 ├── pico2w-button-counter/ ← count debounced button presses on the LCD
 ├── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
-└── pico2w-dimmer-task/   ← the dimmer as a background task; REPL stays free
+├── pico2w-dimmer-task/   ← the dimmer as a background task; REPL stays free
+└── pico2w-button-irq/    ← count presses with a GPIO interrupt, no polling
 ```
 
 Experiments pull in shared code from `lib/` with `#include ../lib/<file>.fs`.
@@ -111,8 +112,12 @@ make repl
 
 1. If a program is running (e.g. `counter`), press any key to stop it and get
    the `ok` prompt back.
-2. Optional: type `reboot` to clear RAM and reset the hardware (LEDs off) before
-   loading something else.
+2. Type `reboot` to clear RAM and reset the hardware (LEDs off) before loading
+   something else. This is **required** after experiments that start background
+   tasks or interrupts (`start-dimmer`, `start-irq-counter`): `make load` only
+   adds words, it doesn't stop tasks that are already running. A leftover task
+   keeps driving the LCD and the button, and the display fills with a mix of
+   both programs' text and garbage characters.
 3. Press `Ctrl-A`, then `\`, and answer `y` to "Really quit and kill all your windows?".
 
 Don't close the terminal window instead, and don't use `Ctrl-A d`: both leave
@@ -143,6 +148,7 @@ one-liners such as `25 brightness!`.
 | [pico2w-button-counter](pico2w-button-counter/) | Raspberry Pi Pico 2W | Count debounced button presses on GP14 and show them on the LCD |
 | [pico2w-led-dimmer](pico2w-led-dimmer/) | Raspberry Pi Pico 2W | Set the GP15 LED's brightness with PWM, stepped by the button, shown on the LCD |
 | [pico2w-dimmer-task](pico2w-dimmer-task/) | Raspberry Pi Pico 2W | Run the dimmer as a zeptoforth task, controllable from the REPL while it runs |
+| [pico2w-button-irq](pico2w-button-irq/) | Raspberry Pi Pico 2W | Count button presses with a GPIO interrupt; LCD shows presses vs. raw bounce edges |
 
 ## Hardware
 

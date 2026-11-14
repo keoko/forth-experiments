@@ -43,7 +43,9 @@ dimmer-task @ run      \ resume it
 dimmer-task @ kill     \ end it for good (start-dimmer starts a new one)
 ```
 
-`reboot` also ends it, along with everything else in RAM.
+`reboot` also ends it, along with everything else in RAM. **Reboot before
+loading another experiment**: the task keeps running otherwise, and keeps
+writing to the LCD and reacting to the button.
 
 ## How it works
 
