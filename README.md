@@ -10,11 +10,13 @@ forth-experiments/
 │   ├── zeptoforth/       ← git submodule (Forth implementation for RP2040/RP2350)
 │   └── cyw43-firmware/   ← git submodule (CYW43439 WiFi chip firmware blobs)
 ├── lib/
-│   └── lcd.fs            ← shared HD44780 / LCD1602A driver (4-bit parallel)
+│   ├── lcd.fs            ← shared HD44780 / LCD1602A driver (4-bit parallel)
+│   └── button.fs         ← shared debounced button with short/long press
 ├── pico2w-led-blink/     ← blink the onboard LED on a Raspberry Pi Pico 2W
 ├── pico2w-hello-led/     ← blink an external LED on GP15
 ├── pico2w-hello-lcd/     ← display text on a 16×2 LCD1602A (4-bit parallel)
-└── pico2w-button-counter/ ← count debounced button presses on the LCD
+├── pico2w-button-counter/ ← count debounced button presses on the LCD
+└── pico2w-led-dimmer/    ← set LED brightness with PWM from the button
 ```
 
 Experiments pull in shared code from `lib/` with `#include ../lib/<file>.fs`.
@@ -89,6 +91,7 @@ Code loaded this way lives in RAM, so reload it after every power cycle.
 | [pico2w-hello-led](pico2w-hello-led/) | Raspberry Pi Pico 2W | Blink an external LED on GP15 via direct GPIO |
 | [pico2w-hello-lcd](pico2w-hello-lcd/) | Raspberry Pi Pico 2W | Display "hello world, / zeptoforth!" on a 16×2 LCD1602A (4-bit parallel) |
 | [pico2w-button-counter](pico2w-button-counter/) | Raspberry Pi Pico 2W | Count debounced button presses on GP14 and show them on the LCD |
+| [pico2w-led-dimmer](pico2w-led-dimmer/) | Raspberry Pi Pico 2W | Set the GP15 LED's brightness with PWM, stepped by the button, shown on the LCD |
 
 ## Hardware
 
