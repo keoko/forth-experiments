@@ -25,9 +25,12 @@ variable thermometer-task
 
 : celsius>tenths ( f -- n ) 10,0 f* round-half-even ;
 
+\ Inside <# ... #>: the digits of a tenths value, e.g. 246 -> "24.6"
+: #tenths ( ud -- ud ) # [char] . hold #s ;
+
 \ 246 -> "24.6°C"; $DF is the degree sign in the HD44780 character set
 : tenths>string ( n -- c-addr u )
-  dup abs 0 <# [char] C hold $DF hold # [char] . hold #s rot sign #>
+  dup abs 0 <# [char] C hold $DF hold #tenths rot sign #>
 ;
 
 : update ( -- )
